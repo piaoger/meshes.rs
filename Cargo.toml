@@ -1,0 +1,13 @@
+[package]
+name = "meshes"
+version = "0.0.1"
+license = "MIT"
+description = "Mesh library written in rust."
+authors = ["piaoger <piaoger@gmail.com>"]
+readme = "README.md"
+repository = "https://github.com/piaoger/meshes.rs.git"
+homepage = "https://github.com/piaoger/meshes.rs"
+
+[lib]
+name = "meshes"
+path = "./src/lib.rs"
