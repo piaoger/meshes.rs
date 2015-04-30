@@ -6,6 +6,7 @@ use std::error::Error;
 
 use std::io::prelude::*;
 use std::io::{ BufReader, BufWriter};
+use std::io::SeekFrom; 
 
 use std::str::FromStr;
 use std::fmt::{self, Formatter};
@@ -18,13 +19,18 @@ use std::collections::hash_map::Entry::*;
 //use std::collections::BTreeMap;
 
 
+// internal mods
 use utils::*;
 use mesh::Mesh;
 use vertex::Vertex;
 use io::*;
 
+enum StlFileType {
+    Ascii = 0,
+    Binary = 1
+}
 
-// see https://raw.githubusercontent.com/simnalamburt/obj-rs/master/src/lib.rs
+
 fn process_raw_vertex(v2i_map: &mut HashMap<Vertex,u32>, vertex : & Vec<f32>) ->u32 {
 
     let scale = 10000.0;
@@ -81,6 +87,53 @@ fn parse_normal(normals : &mut Vec<f32>, n0: Option<&str>, n1: Option<&str>, n2:
     };
 
     vec_push_all(normals, &[normal.0, normal.1, normal.2]);
+}
+
+
+
+fn guess_filetype<B: BufRead + Seek>(reader: &mut B) -> Result<StlFileType, LoadError> {
+    let size = reader.seek(SeekFrom::End(0)).unwrap();
+    reader.seek( SeekFrom::Start(0));
+
+    let mut is_binary = true;
+    if(size < 84) {
+        is_binary = false;
+    }
+
+    let mut header = [0;80];
+    reader.read(&mut header);
+
+    if is_binary {
+        let mut ntris : u64 = 0u64;
+        {
+            let mut ntris_bytes = [0;4];
+            reader.read(&mut ntris_bytes);
+            ntris = get4byte(&mut ntris_bytes) as u64;
+        } 
+
+        // binary stl file size
+        // 1) 80 byte header
+        // 2) 4 byte face count
+        // 3) 50 bytes per face
+        if (ntris * 50 + 84) != size  {
+            is_binary = false;
+        }
+    }
+
+    reader.seek(SeekFrom::Start(0));
+
+    let result = if is_binary {
+        Ok(StlFileType::Binary)
+    } else {
+        // TODO: add skip space here
+        if header[0..5] == b"solid"[..] {
+            Ok(StlFileType::Ascii)
+        } else {
+            Err(LoadError::ReadErr)
+        }
+    };
+
+    result
 }
 
 fn read_ascii_stl<B: BufRead>(reader: &mut B) -> IoResult<Mesh> {
@@ -164,10 +217,10 @@ fn read_ascii_stl<B: BufRead>(reader: &mut B) -> IoResult<Mesh> {
 
             },
             Some("endsolid") => { 
-                println!("one mesh end"); continue; 
+                continue; 
             },
 
-            None => { println!("Skipping empty line"); continue; },
+            None => { continue; },
             Some(m) => { 
                 println!("Skipping empty line");
                 println!("First Unrecognized character {}", m); 
@@ -183,7 +236,7 @@ fn read_ascii_stl<B: BufRead>(reader: &mut B) -> IoResult<Mesh> {
 }
 
 
-fn read_binary_stl<B: BufRead>(reader: &mut B) -> IoResult<Mesh> {
+fn read_binary_stl<B: BufRead + Seek>(reader: &mut B) -> IoResult<Mesh> {
 
     let mut header =   [0;80];
     let size = reader.read(&mut header);
@@ -194,8 +247,6 @@ fn read_binary_stl<B: BufRead>(reader: &mut B) -> IoResult<Mesh> {
     } else {
         print!("!solid");
     }
-
-    // reader.seek(SeekFrom::start(80));
 
     let mut ntris : u32 = 0u32;
     {
@@ -238,7 +289,6 @@ fn read_binary_stl<B: BufRead>(reader: &mut B) -> IoResult<Mesh> {
         readU16(reader);
     }
 
-
     let mut mesh = Mesh::new(verts, None, None, faces);
 
     Ok(mesh)
@@ -260,17 +310,19 @@ pub fn load(name: &str, ascii : bool) -> IoResult<Mesh> {
         Ok(file) => file,
     };
 
-    print!("start loading \n");
-
-    //file.seek(SeekFrom::Start(80)).unwrap();
     let mut reader = BufReader::new(file);
 
-    let mesh;
-    if ascii {
-        mesh = read_ascii_stl(&mut reader);
-    } else {
-        mesh = read_binary_stl(&mut reader);
-    }
+    let mesh = match guess_filetype(&mut reader) {
+        Ok(StlFileType::Ascii) => {
+            read_ascii_stl(&mut reader)
+        },
+        Ok(StlFileType::Binary) => {
+            read_binary_stl(&mut reader)
+        }
+        Err(e) => {
+            Err(LoadError::ReadErr)
+        }
+    };
 
     mesh
 }

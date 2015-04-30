@@ -8,4 +8,8 @@ cargo build
 
 cargo test
 
+cargo doc
+
 cargo run --example load_stl
+
+cargo run --release --example load_stl
