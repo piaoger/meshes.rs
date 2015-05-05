@@ -5,17 +5,12 @@ use std::path::Path;
 use std::error::Error; 
 
 use std::io::prelude::*;
-use std::io::{ BufReader, BufWriter};
+use std::io::BufReader;
 use std::io::SeekFrom; 
 
-use std::str::FromStr;
-use std::fmt::{self, Formatter};
-
-use std::mem::{transmute};
-
+use std::str::FromStr; 
 // HashMap or BTreeMap ?
-use std::collections::HashMap;
-use std::collections::hash_map::Entry::*;
+use std::collections::HashMap; 
 //use std::collections::BTreeMap;
 
 
@@ -93,21 +88,21 @@ fn parse_normal(normals : &mut Vec<f32>, n0: Option<&str>, n1: Option<&str>, n2:
 
 fn guess_filetype<B: BufRead + Seek>(reader: &mut B) -> Result<StlFileType, LoadError> {
     let size = reader.seek(SeekFrom::End(0)).unwrap();
-    reader.seek( SeekFrom::Start(0));
+    reader.seek( SeekFrom::Start(0)).unwrap();;
 
     let mut is_binary = true;
-    if(size < 84) {
+    if size < 84 {
         is_binary = false;
     }
 
     let mut header = [0;80];
-    reader.read(&mut header);
+    reader.read(&mut header).unwrap();;
 
     if is_binary {
-        let mut ntris : u64 = 0u64;
+        let ntris;
         {
             let mut ntris_bytes = [0;4];
-            reader.read(&mut ntris_bytes);
+            reader.read(&mut ntris_bytes).unwrap();;
             ntris = get4byte(&mut ntris_bytes) as u64;
         } 
 
@@ -120,13 +115,21 @@ fn guess_filetype<B: BufRead + Seek>(reader: &mut B) -> Result<StlFileType, Load
         }
     }
 
-    reader.seek(SeekFrom::Start(0));
+    reader.seek(SeekFrom::Start(0)).unwrap();;
 
     let result = if is_binary {
         Ok(StlFileType::Binary)
     } else {
-        // TODO: add skip space here
-        if header[0..5] == b"solid"[..] {
+
+        let mut start = 0usize;
+        for i in 0..80 {
+            if header[i] == b's' {
+                start = i;
+                break;
+            }
+        }
+
+        if header[start..5+start] == b"solid"[..] {
             Ok(StlFileType::Ascii)
         } else {
             Err(LoadError::ReadErr)
@@ -147,7 +150,7 @@ fn read_ascii_stl<B: BufRead>(reader: &mut B) -> IoResult<Mesh> {
     let mut cur_tri : Vec<u32> = Vec::with_capacity(3);
     let mut cur_vt = -1;
 
-    for (idx, line) in reader.lines().enumerate() {
+    for (_, line) in reader.lines().enumerate() {
         let mut words = match line {
             Ok(ref line) => {
                 // Split a string on whitespace, don't include empty strings
@@ -195,7 +198,7 @@ fn read_ascii_stl<B: BufRead>(reader: &mut B) -> IoResult<Mesh> {
 
                     let len = vi_map.len() as u32;
                     let index = process_raw_vertex(&mut vi_map, &xyz);
-                    if(index == len) {
+                    if index == len {
                         vec_push_all(&mut verts, &xyz);
                     }
 
@@ -231,7 +234,7 @@ fn read_ascii_stl<B: BufRead>(reader: &mut B) -> IoResult<Mesh> {
     }
 
 
-    let mut mesh = Mesh::new(verts, None, None, faces);
+    let mesh = Mesh::new(verts, None, None, faces);
     Ok(mesh)
 }
 
@@ -239,7 +242,7 @@ fn read_ascii_stl<B: BufRead>(reader: &mut B) -> IoResult<Mesh> {
 fn read_binary_stl<B: BufRead + Seek>(reader: &mut B) -> IoResult<Mesh> {
 
     let mut header =   [0;80];
-    let size = reader.read(&mut header);
+    reader.read(&mut header).unwrap();;
 
     // TODO: add binary/ascii check here 
     if header[0..5] == b"solid"[..] {
@@ -248,34 +251,34 @@ fn read_binary_stl<B: BufRead + Seek>(reader: &mut B) -> IoResult<Mesh> {
         print!("!solid");
     }
 
-    let mut ntris : u32 = 0u32;
+    let mut ntris;
     {
         let mut ntris_bytes = [0;4];
-        reader.read(&mut ntris_bytes);
+        reader.read(&mut ntris_bytes).unwrap();;
         ntris = get4byte(&mut ntris_bytes);
     }
 
     let mut verts : Vec<f32>= vec![];
-    let mut normals : Vec<f32>= vec![];
+    //let mut normals : Vec<f32>= vec![];
     let mut faces = vec![];
     let mut vi_map :HashMap<Vertex,u32>= HashMap::new();
 
     let mut cur_tri : Vec<u32> = Vec::with_capacity(3);
-    for i in 0..ntris {
+    for _ in 0..ntris {
 
-        let n0 = readFloat32(reader);
-        let n1 = readFloat32(reader);
-        let n2 = readFloat32(reader);
+        let _ = read_float32(reader);
+        let _ = read_float32(reader);
+        let _ = read_float32(reader);
 
-        for j in 0..3 {
-            let x = readFloat32(reader);
-            let y = readFloat32(reader);
-            let z = readFloat32(reader); 
+        for _ in 0..3 {
+            let x = read_float32(reader);
+            let y = read_float32(reader);
+            let z = read_float32(reader); 
 
             let len = vi_map.len() as u32;
-            let mut xyz : Vec<f32> = vec![x, y, z];
+            let xyz : Vec<f32> = vec![x, y, z];
             let index = process_raw_vertex(&mut vi_map, &xyz);
-            if(index == len) {
+            if index == len {
                 vec_push_all(&mut verts, &xyz);
             }
 
@@ -286,22 +289,22 @@ fn read_binary_stl<B: BufRead + Seek>(reader: &mut B) -> IoResult<Mesh> {
         cur_tri.clear();
  
         // Some vendors use it for color
-        readU16(reader);
+        read_u16(reader);
     }
 
-    let mut mesh = Mesh::new(verts, None, None, faces);
+    let mesh = Mesh::new(verts, None, None, faces);
 
     Ok(mesh)
 }
 
 /// Load stl file
-pub fn load(name: &str, ascii : bool) -> IoResult<Mesh> {
+pub fn load(name: &str) -> IoResult<Mesh> {
     // Create a path to the desired file
     let path = Path::new(name);
     let display = path.display();
 
     // Open the path in read-only mode, returns `IoResult<File>`
-    let mut file = match File::open(path) {
+    let file = match File::open(path) {
         // The `desc` field of `IoError` is a string that describes the error
         Err(why) => {
             println!("couldn't open {}: {}", display, Error::description(&why));
@@ -319,7 +322,7 @@ pub fn load(name: &str, ascii : bool) -> IoResult<Mesh> {
         Ok(StlFileType::Binary) => {
             read_binary_stl(&mut reader)
         }
-        Err(e) => {
+        Err(_) => {
             Err(LoadError::ReadErr)
         }
     };

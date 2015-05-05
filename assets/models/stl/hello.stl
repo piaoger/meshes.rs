@@ -1,4 +1,4 @@
-solid OpenSCAD_Model
+          solid OpenSCAD_Model
   facet normal 0 0 -1
     outer loop
       vertex     -14.6722 3.11867 0

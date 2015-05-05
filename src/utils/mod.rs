@@ -1,10 +1,6 @@
 //! utils
 
-use std::error::Error; 
 use std::io::prelude::*;
-// use std::io::{ BufReader, BufWriter};
-// use std::str::FromStr;
-// use std::fmt::{self, Formatter};
 use std::fmt;
 use std::mem::{transmute};
 
@@ -27,12 +23,12 @@ pub fn get2byte(p: &[u8]) -> u16 {
 }
 
 /// convert 4 byte u8 to a u32 from reader
-pub fn  readU16<B: BufRead>(reader: &mut B) ->u16 {
+pub fn  read_u16<B: BufRead>(reader: &mut B) ->u16 {
 
     let mut p = [0;2];
     for i in 0..2 {
         let mut u = [0];
-        reader.read(&mut u);
+        reader.read(&mut u).unwrap();
         p[i] = u[0];
     }
 
@@ -40,12 +36,12 @@ pub fn  readU16<B: BufRead>(reader: &mut B) ->u16 {
 }
 
 /// convert 4 byte u8 to a f32 from reader
-pub fn  readFloat32<B: BufRead>(reader: &mut B) ->f32 {
+pub fn  read_float32<B: BufRead>(reader: &mut B) ->f32 {
 
     let mut p = [0;4];
     for i in 0..4 {
         let mut u = [0];
-        reader.read(&mut u);
+        reader.read(&mut u).unwrap();
         p[i] = u[0];
     }
 
@@ -58,7 +54,7 @@ pub fn  readFloat32<B: BufRead>(reader: &mut B) ->f32 {
             v
         },
         _=>{
-            panic!("readFloat32 error");
+            panic!("read_float32 error");
         }
     };
 
