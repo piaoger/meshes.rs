@@ -13,11 +13,10 @@ fn my_test_load_stl()
             meshio::obj::save(&mesh, "result.obj");
             meshio::ply::save(&mesh, "result.ply");
         },
-        _=>{}
+        _ => {}
    }
 }
 
 fn main() {
     my_test_load_stl();
-    print!("sdfsff");
 }

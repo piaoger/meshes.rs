@@ -241,15 +241,8 @@ fn read_ascii_stl<B: BufRead>(reader: &mut B) -> IoResult<Mesh> {
 
 fn read_binary_stl<B: BufRead + Seek>(reader: &mut B) -> IoResult<Mesh> {
 
-    let mut header =   [0;80];
-    reader.read(&mut header).unwrap();;
-
-    // TODO: add binary/ascii check here 
-    if header[0..5] == b"solid"[..] {
-        print!("is solid");
-    } else {
-        print!("!solid");
-    }
+    let mut header = [0;80];
+    reader.read(&mut header).unwrap();
 
     let mut ntris;
     {

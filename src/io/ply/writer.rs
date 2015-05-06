@@ -4,12 +4,10 @@
 use std::error::Error; 
 
 use std::io::BufWriter;
+use std::io::prelude::*;
 
 use std::fs::File;
 use std::path::Path;
-
-
-use std::io::prelude::*;
 
 use mesh::*;
 
@@ -59,7 +57,6 @@ pub fn save(mesh: &Mesh, name: &str) {
     write!(&mut writer, "element face {}\n",  mesh.faces.len()/3).unwrap();
     write!(&mut writer, "property list uchar int vertex_indices\n").unwrap();
     write!(&mut writer, "end_header\n").unwrap();
-
 
     for i in 0 ..mesh.vertices.len() / 3  {
         write!(&mut writer, "{} {} {}\n", mesh.vertices[3*i], mesh.vertices[3*i+1], mesh.vertices[3*i+2]).unwrap();

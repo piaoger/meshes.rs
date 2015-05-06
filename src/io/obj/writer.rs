@@ -4,13 +4,12 @@
 use std::error::Error; 
 
 use std::io::BufWriter;
+use std::io::prelude::*;
 
 use std::fs::File;
 use std::path::Path;
 
-
-use std::io::prelude::*;
-
+// internal
 use mesh::*;
 
 
