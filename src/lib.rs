@@ -3,7 +3,7 @@
 //!
 //! This crate provides Mesh readers and writers and basic model processing functions.
 //!
-//! Supported File Formats: STL, OBJ, PLY
+//! Supported File Formats: STL, OBJ, PLY, AMF
 //! 
 //! Mesh Processing: None
 

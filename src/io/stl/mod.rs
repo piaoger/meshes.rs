@@ -126,6 +126,8 @@
 //!
 //! - references
 //!
+//! [The STL Format](http://www.ennex.com/~fabbers/StL.asp)
+//!
 //! [wikipedia](http://en.wikipedia.org/wiki/STL_%28file_format%29)
 
 mod reader;
