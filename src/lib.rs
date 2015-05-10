@@ -12,6 +12,7 @@
 
 pub mod io;
 pub mod utils;
+pub mod simplification;
 
 mod mesh;
 mod vertex;

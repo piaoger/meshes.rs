@@ -3,7 +3,7 @@
 
 
 
-
+pub mod amf;
 pub mod obj;
 pub mod ply;
 pub mod stl;

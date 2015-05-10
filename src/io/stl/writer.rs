@@ -13,7 +13,7 @@ use utils::*;
 
 /// Save Mesh to STL File
 pub fn save(mesh: &Mesh, name: &str) {
-    save_binary(mesh, name);
+    save_ascii(mesh, name);
 }
 
 fn save_ascii(mesh: &Mesh, name: &str) {

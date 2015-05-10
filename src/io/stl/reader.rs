@@ -103,7 +103,7 @@ fn guess_filetype<B: BufRead + Seek>(reader: &mut B) -> Result<StlFileType, Load
         {
             let mut ntris_bytes = [0;4];
             reader.read(&mut ntris_bytes).unwrap();;
-            ntris = get4byte(&mut ntris_bytes) as u64;
+            ntris = get_4bytes(&mut ntris_bytes) as u64;
         } 
 
         // binary stl file size
@@ -248,7 +248,7 @@ fn read_binary_stl<B: BufRead + Seek>(reader: &mut B) -> IoResult<Mesh> {
     {
         let mut ntris_bytes = [0;4];
         reader.read(&mut ntris_bytes).unwrap();;
-        ntris = get4byte(&mut ntris_bytes);
+        ntris = get_4bytes(&mut ntris_bytes);
     }
 
     let mut verts : Vec<f32>= vec![];

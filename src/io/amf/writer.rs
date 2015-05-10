@@ -38,8 +38,7 @@ pub fn save(mesh: &Mesh, name: &str) {
     for i in 0 ..mesh.vertices.len() / 3  {
         write!(&mut writer, "            <vertex>\n").unwrap();
         write!(&mut writer, "                <coordinates>\n").unwrap();
-        write!(&mut writer, "                    <x>{}</x> <y>{}</y> <z>{}</z>\n", 
-        											mesh.vertices[3*i], mesh.vertices[3*i + 1], mesh.vertices[3*i + 2]).unwrap();
+        write!(&mut writer, "                    <x>{}</x> <y>{}</y> <z>{}</z>\n", mesh.vertices[3*i], mesh.vertices[3*i + 1], mesh.vertices[3*i + 2]).unwrap();
         write!(&mut writer, "                </coordinates>\n").unwrap();
         write!(&mut writer, "            </vertex>\n").unwrap();
     }
@@ -50,7 +49,7 @@ pub fn save(mesh: &Mesh, name: &str) {
         let i0 = mesh.faces[3*i] as usize;
         let i1 = mesh.faces[3*i+1] as usize;
         let i2 = mesh.faces[3*i+2] as usize;
-        write!(&mut writer, "            <triangle>\n");
+        write!(&mut writer, "            <triangle>\n").unwrap();
         write!(&mut writer, "                <v1>{}</v1> <v2>{}</v2> <v3>{}</v3>\n", i0, i1,i2).unwrap();
         write!(&mut writer, "            </triangle>\n").unwrap();
     }
