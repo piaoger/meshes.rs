@@ -1,4 +1,10 @@
 
 //! Mesh Simplification
 
-pub mod melax;
+mod melax;
+
+// pub use self::melax::{
+// 	Triangle,
+// 	Vertex
+// };
+

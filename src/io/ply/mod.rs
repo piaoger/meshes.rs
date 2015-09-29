@@ -1,11 +1,13 @@
 //! Reader and writer for PLY model
+//! 
+//! Writer only now.
 //!
 //! PLY is a computer file format known as the Polygon File Format or the Stanford Triangle Format.
 //! It was principally designed to store three-dimensional data from 3D scanners.
 //!
-//! - cube.ply
-//! 
-//! ```
+//! # cube.ply
+//!
+//! ``` text
 //! ply
 //! format ascii 1.0
 //! comment solidmcp generated
@@ -36,6 +38,7 @@
 //! 3 0 6 4
 //! 3 7 3 5
 //! 3 5 3 1
+//!
 //! ```
 
 mod writer;

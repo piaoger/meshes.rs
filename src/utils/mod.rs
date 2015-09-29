@@ -13,7 +13,6 @@ pub use self::buffer::{
     write_u32,
 };
 
-
 /// An utility function to print out all  items in the vector.
 pub fn print_all<T: fmt::Display>(all: Vec<T>) {
     for a in all.iter() {

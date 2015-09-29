@@ -24,13 +24,12 @@ pub fn save(mesh: &Mesh, name: &str) {
 
     let mut writer = BufWriter::new(file);
 
-    let amf_unit = "millimeter"; // inch
-    let amf_version = "1.1";
+    let unit = "millimeter"; // millimeter, inch
+    let version = "1.1";
     let object_id = "1";
 
-
     write!(&mut writer, "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n").unwrap();
-    write!(&mut writer, "<amf unit='{}' version='{}'>\n", amf_unit, amf_version).unwrap();
+    write!(&mut writer, "<amf unit='{}' version='{}'>\n", unit, version).unwrap();
     write!(&mut writer,"  <object id='{}'>\n", object_id).unwrap();
     write!(&mut writer, "    <mesh>\n").unwrap();
 

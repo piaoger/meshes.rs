@@ -1,9 +1,11 @@
 //! Reader and writer for AMF model
 //! 
+//! Writer only now.
+//!
 //! Additive Manufacturing File Format (AMF) is an open standard for describing objects for additive manufacturing processes such as 3D printing.
 //! Unlike its predecessor STL format, AMF has native support for color, materials, lattices, and constellations.
 //! 
-//! ```
+//! ``` xml
 //! <?xml version="1.0" encoding="utf-8"?>
 //! <amf unit="inch" version="1.1">
 //! <metadata type="name">Split Pyramid</metadata>

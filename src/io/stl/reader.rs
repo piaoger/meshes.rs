@@ -118,23 +118,23 @@ fn guess_filetype<B: BufRead + Seek>(reader: &mut B) -> Result<StlFileType, Load
     reader.seek(SeekFrom::Start(0)).unwrap();;
 
     let result = if is_binary {
-        Ok(StlFileType::Binary)
-    } else {
-
-        let mut start = 0usize;
-        for i in 0..80 {
-            if header[i] == b's' {
-                start = i;
-                break;
-            }
-        }
-
-        if header[start..5+start] == b"solid"[..] {
-            Ok(StlFileType::Ascii)
+            Ok(StlFileType::Binary)
         } else {
-            Err(LoadError::ReadErr)
-        }
-    };
+
+            let mut start = 0usize;
+            for i in 0..80 {
+                if header[i] == b's' {
+                    start = i;
+                    break;
+                }
+            }
+
+            if header[start..5+start] == b"solid"[..] {
+                Ok(StlFileType::Ascii)
+            } else {
+                Err(LoadError::ReadErr)
+            }
+        };
 
     result
 }

@@ -13,9 +13,11 @@
 pub mod io;
 pub mod utils;
 pub mod simplification;
+pub mod geom;
 
 mod mesh;
 mod vertex;
 
 pub use vertex::Vertex;
 pub use mesh::Mesh;
+

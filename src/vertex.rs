@@ -24,7 +24,6 @@ impl Eq for Vertex {
 // Implement Hash since there is no default for f32. We'll just hash the bits
 // since we know the f32s will all be canonical from reading.
 impl Hash for Vertex {
-    #[inline]
     fn hash<H: Hasher>(&self, state: &mut H) {
         let x: u32 = unsafe { transmute(self.pos[0]) };
         x.hash(state);

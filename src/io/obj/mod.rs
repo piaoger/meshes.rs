@@ -1,12 +1,16 @@
 //! Reader and writer for OBJ model
 //! 
+//! Writer only now.
+//!
 //! The OBJ file format is a simple data-format that represents 3D geometry alone
 //!  — namely, the position of each vertex, the UV position of each texture coordinate vertex, vertex normals, 
 //! and the faces that make each polygon defined as a list of vertices, and texture vertices.
 //!
+//! [OBJ Spec](http://www.martinreddy.net/gfx/3d/OBJ.spec)
+//!
 //! - cube.obj
 //! 
-//! ```
+//! ``` text
 //! # 8 vertices, 12 faces
 //! mtllib cube.mtl
 //! v 1 -1 1
@@ -42,13 +46,13 @@
 //! 
 //! - cube.mtl
 //!
-//! ```
+//! ``` text
 //! newmtl mat000
 //! Ka 0.5000 0.5000 0.5000
 //! Kd 0 0 0
 //! Tr 0
 //! illum 1
-
+//! ```
 
 
 mod writer;

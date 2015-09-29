@@ -129,7 +129,6 @@ pub fn  write_u16<B: Write>(writer: &mut B, i: u16)  {
      writer.write(&mut p).unwrap();
 }
 
-
 /// convert 4 byte u8 to a f32 from reader
 pub fn read_float32<B: BufRead>(reader: &mut B) ->f32 {
 
