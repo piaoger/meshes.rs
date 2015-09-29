@@ -1,4 +1,4 @@
-//! Reader and writer for OBJ model
+//! # Reader and writer for OBJ model
 //! 
 //! Writer only now.
 //!
@@ -6,7 +6,37 @@
 //!  — namely, the position of each vertex, the UV position of each texture coordinate vertex, vertex normals, 
 //! and the faces that make each polygon defined as a list of vertices, and texture vertices.
 //!
-//! [OBJ Spec](http://www.martinreddy.net/gfx/3d/OBJ.spec)
+//! OBJ export& import is great in blender, even better than Autodesk 3ds Max. It supports more illumination modes, index of refraction, reflection, raytracing ...
+//! 
+//! - [blender obj importer](https://developer.blender.org/diffusion/BA/browse/master/io_scene_obj/import_obj.py)
+//! - [blender obj exporter](https://developer.blender.org/diffusion/BA/browse/master/io_scene_obj/export_obj.py)
+//! - [Some OBJ exported from blender](https://github.com/WoLpH/computer_graphics/tree/master/mesh)
+//!
+//! File format spec:
+//!
+//! - [OBJ Spec](http://www.martinreddy.net/gfx/3d/OBJ.spec)
+//! - [MTL spec] (http://paulbourke.net/dataformats/mtl/)
+//!     
+//! Basic material defs:
+//!
+//! ``` text
+//!   d = Dissolve (aka Opacity/Transparency)(some may read 'Tr' instead - D|S reads both)
+//!   Ns = Shininess (aka Glossiness - Focus of Specular Highlight)
+//!   Ni = Optical Density (aka Index of Refraction)
+//!   Ka = Ambient Color
+//!   Kd = Diffuse Color
+//!   Ks = Specular Color
+//!   Km = Bump Strength (some may read 'bump' instead)
+//!
+//!   map_Ka = Ambient Color Map Path
+//!   map_Kd = Diffuse Color Map Path
+//!   map_Ks = Specular color Map Path
+//!   map_D = Dissolve Map Path (some may read 'map_d' instead)
+//!   map_Bump = Bump Map Path (some may read 'map_bump' or 'map_Km' instead)
+//!   map_refl = Environment Map Path (some may read 'refl' instead)
+//! ```
+//!
+//! Examples
 //!
 //! - cube.obj
 //! 
