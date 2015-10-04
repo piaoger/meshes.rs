@@ -1,6 +1,6 @@
 
 //! STL Model Writer
-use std::error::Error; 
+use std::error::Error;
 
 use std::io::BufWriter;
 use std::io::prelude::*;
@@ -16,6 +16,7 @@ pub fn save(mesh: &Mesh, name: &str) {
     save_ascii(mesh, name);
 }
 
+#[allow(dead_code)]
 fn save_ascii(mesh: &Mesh, name: &str) {
     let path = Path::new(name);
     let file =  match File::create(path) {
@@ -41,7 +42,7 @@ fn save_ascii(mesh: &Mesh, name: &str) {
     //   ...
     // endsolid
     write!(&mut writer, "solid stl.rs\n").unwrap();
- 
+
     for i in 0 ..mesh.faces.len() / 3  {
         let norm = [0f32, 0f32, 1f32];
         let i0 = 3*mesh.faces[3*i] as usize;
@@ -50,11 +51,11 @@ fn save_ascii(mesh: &Mesh, name: &str) {
 
         write!(&mut writer, "    facet normal {} {} {}\n", norm[0], norm[1], norm[2]).unwrap();
         write!(&mut writer, "        outer loop\n").unwrap();
-        write!(&mut writer, "            vertex {} {} {}\n", 
+        write!(&mut writer, "            vertex {} {} {}\n",
             mesh.vertices[i0], mesh.vertices[i0+1], mesh.vertices[i0+2]).unwrap();
-        write!(&mut writer, "            vertex {} {} {}\n", 
+        write!(&mut writer, "            vertex {} {} {}\n",
             mesh.vertices[i1], mesh.vertices[i1+1], mesh.vertices[i1+2]).unwrap();
-        write!(&mut writer, "            vertex {} {} {}\n", 
+        write!(&mut writer, "            vertex {} {} {}\n",
             mesh.vertices[i2], mesh.vertices[i2+1], mesh.vertices[i2+2]).unwrap();
 
         write!(&mut writer, "        endloop\n").unwrap();
@@ -65,7 +66,7 @@ fn save_ascii(mesh: &Mesh, name: &str) {
     writer.flush().unwrap();
 }
 
-
+#[allow(dead_code)]
 fn save_binary(mesh: &Mesh, name: &str) {
     let path = Path::new(name);
     let file =  match File::create(path) {

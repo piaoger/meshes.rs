@@ -2,15 +2,15 @@
 //! STL Model Reader
 use std::fs::File;
 use std::path::Path;
-use std::error::Error; 
+use std::error::Error;
 
 use std::io::prelude::*;
 use std::io::BufReader;
-use std::io::SeekFrom; 
+use std::io::SeekFrom;
 
-use std::str::FromStr; 
+use std::str::FromStr;
 // HashMap or BTreeMap ?
-use std::collections::HashMap; 
+use std::collections::HashMap;
 //use std::collections::BTreeMap;
 
 
@@ -104,7 +104,7 @@ fn guess_filetype<B: BufRead + Seek>(reader: &mut B) -> Result<StlFileType, Load
             let mut ntris_bytes = [0;4];
             reader.read(&mut ntris_bytes).unwrap();;
             ntris = get_4bytes(&mut ntris_bytes) as u64;
-        } 
+        }
 
         // binary stl file size
         // 1) 80 byte header
@@ -219,15 +219,15 @@ fn read_ascii_stl<B: BufRead>(reader: &mut B) -> IoResult<Mesh> {
             Some("endfacet") => {
 
             },
-            Some("endsolid") => { 
-                continue; 
+            Some("endsolid") => {
+                continue;
             },
 
             None => { continue; },
-            Some(m) => { 
+            Some(m) => {
                 println!("Skipping empty line");
-                println!("First Unrecognized character {}", m); 
-                return Err(LoadError::UnrecognizedCharacter) 
+                println!("First Unrecognized character {}", m);
+                return Err(LoadError::UnrecognizedCharacter)
             },
         }
 
@@ -244,7 +244,7 @@ fn read_binary_stl<B: BufRead + Seek>(reader: &mut B) -> IoResult<Mesh> {
     let mut header = [0;80];
     reader.read(&mut header).unwrap();
 
-    let mut ntris;
+    let ntris;
     {
         let mut ntris_bytes = [0;4];
         reader.read(&mut ntris_bytes).unwrap();;
@@ -266,7 +266,7 @@ fn read_binary_stl<B: BufRead + Seek>(reader: &mut B) -> IoResult<Mesh> {
         for _ in 0..3 {
             let x = read_float32(reader);
             let y = read_float32(reader);
-            let z = read_float32(reader); 
+            let z = read_float32(reader);
 
             let len = vi_map.len() as u32;
             let xyz : Vec<f32> = vec![x, y, z];
@@ -280,7 +280,7 @@ fn read_binary_stl<B: BufRead + Seek>(reader: &mut B) -> IoResult<Mesh> {
 
         vec_push_all(&mut faces, &cur_tri);
         cur_tri.clear();
- 
+
         // Some vendors use it for color
         read_u16(reader);
     }

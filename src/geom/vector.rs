@@ -12,10 +12,10 @@ impl Vector3  {
             x: x, y: y, z: z
         }
     }
-    
+
     pub fn clone(& self) -> Vector3  {
         Vector3::new(self.x, self.y, self.z)
-    } 
+    }
 
     pub fn negated(&self) -> Vector3 {
         Vector3::new(-self.x, -self.y, -self.z)
@@ -33,7 +33,7 @@ impl Vector3  {
         Vector3::new(self.x * a, self.y * a, self.z * a)
     }
 
-    pub fn dividedBy(&self, a: f32) ->Vector3 {
+    pub fn divided_by(&self, a: f32) ->Vector3 {
         Vector3::new(self.x / a, self.y / a, self.z / a)
     }
 
@@ -45,14 +45,14 @@ impl Vector3  {
         let v = a.minus(self);
          self.plus(&v.times(t))
     }
- 
+
     pub fn length(&self) ->f32 {
         let sq = self.dot(self);
         sq * sq
     }
 
     pub fn unit(&self) ->Vector3 {
-        self.dividedBy(self.length())
+        self.divided_by(self.length())
     }
 
     pub fn cross(&self, a:&Vector3) ->Vector3 {
@@ -87,7 +87,7 @@ fn test_Vector3_plus() {
     assert!(v3.y == 3f32);
     assert!(v3.z == 3f32);
 }
- 
+
 #[test]
 fn test_Vector3_minus() {
     let v1 :Vector3 = Vector3::new(22f32,2f32,2f32);
@@ -110,7 +110,7 @@ fn test_Vector3_times() {
 #[test]
 fn test_Vector3_dividedBy() {
     let v1 :Vector3 = Vector3::new(28f32,24f32,12f32);
-    let v3 :Vector3 = v1.dividedBy(4f32);
+    let v3 :Vector3 = v1.divided_by(4f32);
     assert!(v3.x == 7f32);
     assert!(v3.y == 6f32);
     assert!(v3.z == 3f32);
